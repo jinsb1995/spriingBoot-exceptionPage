@@ -1,11 +1,17 @@
 package hello.exception.servlet;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -32,6 +38,28 @@ public class ErrorPageContoller {
         printErrorInfo(request);
         return "error-page/500";
     }
+
+
+    /**
+     *  header에 있는 Accept의 타입에 따라서 뭐가 호출이 될건지 정해주는 것이다.
+     *  Accept 에 Application/json이 들어오면 얘가 우선으로 호출된다.
+     */
+    @RequestMapping(value = "/error-page/500", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, Object>> errorPage500Api(HttpServletRequest request, HttpServletResponse response) {
+
+        log.info("API errorPage 500");
+
+        Map<String, Object> result = new HashMap<>();
+        Exception ex = (Exception) request.getAttribute(ERROR_EXCEPTION); // 여기서 오류 메시지를 가져온다. -> 잘못된 사용자
+        result.put("status", request.getAttribute(ERROR_STATUS_CODE));    // status code
+        result.put("message", ex.getMessage());    // 여기에 메시지
+
+        Integer statusCode = (Integer) request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
+
+        return new ResponseEntity<>(result, HttpStatus.valueOf(statusCode));  // 여기가 상태 코드
+
+    }
+
 
     private void printErrorInfo(HttpServletRequest request) {
         log.info("ERROR_EXCEPTION: {}", request.getAttribute(ERROR_EXCEPTION));
