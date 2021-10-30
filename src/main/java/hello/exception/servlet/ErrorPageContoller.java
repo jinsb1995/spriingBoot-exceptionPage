@@ -43,6 +43,7 @@ public class ErrorPageContoller {
     /**
      *  header에 있는 Accept의 타입에 따라서 뭐가 호출이 될건지 정해주는 것이다.
      *  Accept 에 Application/json이 들어오면 얘가 우선으로 호출된다.
+     *  얘(위에있는 view를 리턴해주는것)보다 여기 오류 메시지랑 브라우저에 표출해줄 상태코드를 리턴해주는 여기가 우선으로 호출된다.
      */
     @RequestMapping(value = "/error-page/500", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, Object>> errorPage500Api(HttpServletRequest request, HttpServletResponse response) {
