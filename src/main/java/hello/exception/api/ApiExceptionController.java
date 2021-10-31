@@ -1,5 +1,6 @@
 package hello.exception.api;
 
+import hello.exception.exception.UserException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,14 @@ public class ApiExceptionController {
             // servletContainer 까지 올라가면 /error를 호출하게 되는데 그렇게 되면 BasicErrorController 로 들어가게 된다.
             // BasicErrorController 가 JSON 형식의 어떤 데이터를 클라이언트에게 내려준다.
             throw new RuntimeException("잘못된 사용자");
+        }
+
+        if (id.equals("bad")) {
+            throw new IllegalArgumentException("잘못된 입력 값");
+        }
+
+        if (id.equals("user-ex")) {
+            throw new UserException("사용자 오류");
         }
 
         return new MemberDto(id, "hello " + id);
